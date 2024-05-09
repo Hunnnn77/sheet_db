@@ -59,12 +59,12 @@ extension type const Option<T>._(T? _) {
     }
   }
 
-  T mapNone(T Function() handleNone) => switch (this) {
+  T unwrapOr(T Function() handleNone) => switch (this) {
         Some<T>(_: final T value) => value,
         None() => handleNone(),
       };
 
-  R when<R>({
+  R match<R>({
     required R Function(T ok) some,
     required R Function() none,
   }) =>
@@ -113,19 +113,22 @@ final class Err<E extends Exception> extends Result<Never, E> {
   String toString() => "Err{exception: $exception}";
 }
 
-extension AsyncSnapshotMethods<T> on AsyncSnapshot<Result<T, Exception>> {
+extension AsyncSnapshotMethods<T, E extends Exception>
+    on AsyncSnapshot<Result<T, E>> {
   Widget on({
     required Widget Function() pending,
-    required Widget Function(Err<Exception> err) fail,
+    required Widget Function(E e) fail,
     required Widget Function(T ok) success,
   }) {
     if (connectionState == ConnectionState.waiting) {
       return pending();
     }
     if (hasError) {
-      return fail(error as Err<Exception>);
+      final Err<E>(exception: E e) = error as Err<E>;
+      return fail(e);
     } else {
-      return success((data as Ok<T>).value);
+      final Ok<T>(value: T ok) = data as Ok<T>;
+      return success(ok);
     }
   }
 }
@@ -134,7 +137,7 @@ extension AsnycSnapshotMethodsForPrimitive<T, E extends Exception>
     on AsyncSnapshot<T> {
   Widget on({
     required Widget Function() pending,
-    required Widget Function(({Type type, String message}) ex) fail,
+    required Widget Function(Pair<Type, String> e) fail,
     required Widget Function(T ok) success,
   }) {
     if (connectionState == ConnectionState.waiting) {
@@ -142,9 +145,8 @@ extension AsnycSnapshotMethodsForPrimitive<T, E extends Exception>
     }
     if (hasError) {
       return fail(
-        (
-          type: error.runtimeType,
-          message: (error as E).toString().split(":").last.trim()
+        Pair(
+          (error.runtimeType, (error as E).toString().split(":").last.trim()),
         ),
       );
     } else {
@@ -164,13 +166,13 @@ extension ResultMethods<T> on Result<T, Exception> {
     }
   }
 
-  T mapError(T Function(Exception e) handleErr) => switch (this) {
+  T unwrapOr(T Function(Exception e) handleErr) => switch (this) {
         Ok<T>() => unwrap(),
         Err<Exception>(exception: final Exception e) => handleErr(e),
         _ => throw Error()
       };
 
-  R when<R>({
+  R match<R>({
     required R Function(T ok) ok,
     required R Function(Exception e) err,
   }) =>

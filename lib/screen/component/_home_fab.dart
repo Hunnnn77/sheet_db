@@ -90,7 +90,7 @@ class _HomeFABState extends State<_HomeFAB> {
                 ) =>
                     snapshot.on(
                   pending: () => const CircularProgressIndicator(),
-                  fail: (Err<Exception> err) => ErrorScreen(err.exception),
+                  fail: ErrorScreen.new,
                   success: (ScreenState ok) => switch (ok) {
                     OkState() => IconButton(
                         onPressed: () {
@@ -174,7 +174,7 @@ class _HomeFABState extends State<_HomeFAB> {
                   ) =>
                       snapshot.on(
                     pending: () => const CircularProgressIndicator(),
-                    fail: (Err<Exception> e) => ErrorScreen(e.exception),
+                    fail: ErrorScreen.new,
                     success: (ScreenState ok) {
                       if (ok is LoadingState) {
                         return const CircularProgressIndicator();
@@ -293,8 +293,8 @@ class _File extends StatelessWidget {
                     (BuildContext context, AsyncSnapshot<String> snapshot) =>
                         snapshot.on(
                   pending: () => const CircularProgressIndicator(),
-                  fail: (({String message, Type type}) ex) =>
-                      ErrorScreen(Exception(ex.message)),
+                  fail: (Pair<Type, String> ex) =>
+                      ErrorScreen(Exception(ex.right)),
                   success: (String ok) => Text(
                     "path: $ok".cap,
                     style: textStyle,
@@ -314,8 +314,7 @@ class _File extends StatelessWidget {
                     ) =>
                         snapshot.on(
                       pending: () => const CircularProgressIndicator(),
-                      fail: (({String message, Type type}) ex) =>
-                          Text(ex.message),
+                      fail: (Pair<Type, String> ex) => Text(ex.right),
                       success: (Uint8List ok) => ok.isNotEmpty
                           ? Text(
                               utf8.decode(ok).isNotEmpty ? "ok" : "no",
@@ -361,7 +360,7 @@ class _Settings extends StatelessWidget {
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) =>
                   snapshot.on(
                 pending: () => const CircularProgressIndicator(),
-                fail: (({String message, Type type}) ex) => Text("${ex.type}"),
+                fail: (Pair<Type, String> e) => Text("${e.left}"),
                 success: (String ok) => Text(
                   "path: $ok".cap,
                   style: textStyle,
@@ -381,8 +380,7 @@ class _Settings extends StatelessWidget {
                   ) =>
                       snapshot.on(
                     pending: () => const CircularProgressIndicator(),
-                    fail: (({String message, Type type}) ex) =>
-                        Text("${ex.type}"),
+                    fail: (Pair<Type, String> e) => Text("${e.left}"),
                     success: (Uint8List ok) => ok.isNotEmpty
                         ? Text(
                             utf8.decode(ok).isNotEmpty ? "ok" : "no",

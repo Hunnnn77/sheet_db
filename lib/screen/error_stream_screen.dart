@@ -25,7 +25,7 @@ class ErrStreamScreen extends StatelessWidget {
       ) =>
           snapshot.on(
         pending: () => const CircularProgressIndicator(),
-        fail: (Err<Exception> e) => ErrorScreen(e.exception),
+        fail: ErrorScreen.new,
         success: (ScreenState ok) => child,
       ),
     );

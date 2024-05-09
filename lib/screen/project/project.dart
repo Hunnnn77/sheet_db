@@ -53,7 +53,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         ) =>
             snapshot.on(
           pending: () => const CircularProgressIndicator(),
-          fail: (Err<Exception> e) => ErrorScreen(e.exception),
+          fail: ErrorScreen.new,
           success: (ScreenState ok) => GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Padding(

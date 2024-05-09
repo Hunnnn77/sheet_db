@@ -14,8 +14,7 @@ class _ListView extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<Iterable<Project>> snapshot) =>
               snapshot.on(
         pending: () => const CircularProgressIndicator(),
-        fail: (({String message, Type type}) ex) =>
-            ErrorScreen(Exception(ex.type)),
+        fail: (Pair<Type, String> e) => ErrorScreen(Exception(e.left)),
         success: (Iterable<Project> ok) => ListView.builder(
           itemCount: ok.length,
           itemBuilder: (BuildContext context, int index) {

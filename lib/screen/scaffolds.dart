@@ -90,7 +90,7 @@ class ProjectScaffold extends StatelessWidget {
           ) =>
               snapshot.on(
             pending: () => const CircularProgressIndicator(),
-            fail: (Err<Exception> e) => ErrorScreen(e.exception),
+            fail: ErrorScreen.new,
             success: (ScreenState ok) => switch (ok) {
               OkState() => IconButton(
                   onPressed: () => context.pop(),

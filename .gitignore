@@ -46,4 +46,5 @@ app.*.map.json
 **/*.freezed.dart
 **/*.g.dart
 
-assets/a.json
+assets/*.json
+assets/*.jsonc

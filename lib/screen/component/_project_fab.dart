@@ -58,7 +58,7 @@ class _ProjectFAB extends StatelessWidget {
           ) =>
               snapshot.on(
             pending: () => const CircularProgressIndicator(),
-            fail: (Err<Exception> err) => ErrorScreen(err.exception),
+            fail: ErrorScreen.new,
             success: (ScreenState ok) {
               if (ok is LoadingState) {
                 return const CircularProgressIndicator();

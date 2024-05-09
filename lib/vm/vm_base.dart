@@ -145,7 +145,7 @@ extension AsnycSnapshotMethodsForPrimitive<T, E extends Exception>
     }
     if (hasError) {
       return fail(
-        Pair(
+        Pair<Type, String>(
           (error.runtimeType, (error as E).toString().split(":").last.trim()),
         ),
       );
@@ -157,8 +157,8 @@ extension AsnycSnapshotMethodsForPrimitive<T, E extends Exception>
 
 extension ResultMethods<T> on Result<T, Exception> {
   T unwrap() {
-    if (this case Ok<T>(value: final T v)) {
-      return v;
+    if (this case Ok<T>(value: final T value)) {
+      return value;
     } else if (this case Err<Exception>(exception: final Exception e)) {
       throw Panic(this, type: runtimeType, message: e.toString());
     } else {
@@ -184,7 +184,7 @@ extension ResultMethods<T> on Result<T, Exception> {
 }
 
 extension ScopedMethods<T> on T {
-  R let<R>(R Function(T value) f) => f(this);
+  R then<R>(R Function(T value) f) => f(this);
 
   T eq(T value) {
     if (value.runtimeType != runtimeType || value != this) {
